@@ -1,0 +1,6 @@
+Pillow
+argsparse
+pathlib
+pyfiglet
+sys
+os
