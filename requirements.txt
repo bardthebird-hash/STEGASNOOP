@@ -1,6 +1,1 @@
-Pillow
-argsparse
-pathlib
-pyfiglet
-sys
-os
+pillow pyfiglet rich
