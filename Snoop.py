@@ -506,7 +506,7 @@ def main():
             # --- NEW FLAIR! (Trick 3: The "Theatrical Pause") ---
             # This 0.5s pause is just long enough for the user
             # to *see* the spinner, making it feel more responsive.
-            time.sleep(0.5)
+            time.sleep(1.5)
 
             # Run 'file exists' check
             if not os.path.exists(image_path):
