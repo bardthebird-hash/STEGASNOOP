@@ -7,6 +7,9 @@ import sys
 import os # We'll need this for the file-reading
 import math
 from PIL.ExifTags import TAGS
+import time
+from rich.panel import Panel
+from rich.status import Status
 # --- 2. ALL FUNCTION DEFINITIONS GO NEXT ---
 #    (Python must read these *before* they can be called)
 
@@ -454,64 +457,81 @@ def check_magic_numbers(file_path):
 # --- 3. THE "MAIN" FUNCTION GOES HERE ---
 #    (This function *calls* all the functions defined above)
 
+# --- 3. MAIN CONTROLLER (NOW WITH FLAIR!) ---
 def main():
     """
     This is the main "controller" for our program.
     """
     
-    # 1. Set up the command-line argument parser
     parser = argparse.ArgumentParser(
         description="StegaSnoop-TUI: A TUI-based Steganography Scanner",
-        epilog="Example: python stegasnoop_tui.py -i my_image.png"
+        epilog="Example: python snoop.py -i my_image.png another_image.jpg suspicious_file.png"
     )
-    # We make the image argument *required*
     parser.add_argument(
         "-i", "--image", 
-        help="Path to the image file to scan", 
+        help="One or more image files to scan, separated by spaces", 
         required=True,
-    nargs='+'
+        nargs='+'
     )
-    
-    # 2. Get the arguments from the user
     args = parser.parse_args()
-    # 3. Run our functions in order!
     
-    # Print the cool banner first
+    # --- NEW FLAIR! ---
+    # Print the banner once
     print_banner()
-    image_paths_list = args.image
-    for image_path_string in image_paths_list:
-        print(f"\n[bold purple]=== Scanning File: {image_path_string} ===[/bold purple]")
-        if not os.path.exists(image_path_string):
-            print(f"[bold red]Error: File not found at '{image_path_string}'. Skipping.[/bold red]")
-            continue
-    # Get the path from the args
-        image_path = args.image
+
+    # Get the list of files
+    image_paths = args.image
     
-    # Check if the file exists before we do anything
-        if not os.path.exists(image_path_string):
-            print(f"[bold red]Error: File not found at '{image_path}'[/bold red]")
-            sys.exit(1) # Exit the script with an error
+    # --- NEW FLAIR! (Trick 1: The "Mission Briefing") ---
+    # Create a nice text list of all files
+    file_list_str = "\n".join(f"  - {f}" for f in image_paths)
+    print(Panel.fit(
+        f"[bold]Target Files:[/bold]\n{file_list_str}",
+        title="Scan Initialized",
+        border_style="purple"
+    ))
+    # ---
 
-    # Run the EOF check
-        check_magic_numbers(image_path_string)
-        check_eof(image_path_string)
-    
-    # Run the LSB check
-        decode_lsb(image_path_string)
-    
+    # Loop over every file path the user gave us
+    for image_path in image_paths:
+        
+        # --- NEW FLAIR! (Trick 2: The "Working..." Spinner) ---
+        # This creates an animated spinner that runs *while* your
+        # 5 functions are running. It's much cooler than the old
+        # "=== Scanning File: ... ===" text.
+        
+        # We replace the old header with this context manager
+        with Status(f"[bold purple]Scanning {image_path}...[/bold purple]", spinner="dots12") as status:
+
+            # --- NEW FLAIR! (Trick 3: The "Theatrical Pause") ---
+            # This 0.5s pause is just long enough for the user
+            # to *see* the spinner, making it feel more responsive.
+            time.sleep(0.5)
+
+            # Run 'file exists' check
+            if not os.path.exists(image_path):
+                # Update the status to show an error for this file
+                status.update(f"[bold red]File not found: {image_path}. Skipping.[/bold red]", spinner=None)
+                time.sleep(1) # Pause so user can read the error
+                continue 
+
+            # --- Run all 5 of our scanners ---
+            # (Their print statements will appear *below* the spinner)
+            check_magic_numbers(image_path)
+            check_eof(image_path)
+            decode_lsb(image_path)
+            calculate_entropy(image_path)
+            check_metadata(image_path)
+            
+            # Stop the spinner and show a "complete" message for this file
+            status.update(f"[bold green]Scan complete for {image_path}[/bold green]", spinner=None)
+
+        # Add a simple newline to space out the reports
+        print() 
+
+    print("\n[bold]=== All scans finished. ===[/bold]")
 
 
-        calculate_entropy(image_path_string)
-        check_metadata(image_path_string)
-    print("\n[bold]Scan complete.[/bold]")
-
-
-# --- 4. THE "KEY" TO START THE PROGRAM ---
-#    (This must be at the *very bottom* of the file)
-#
-# This tells Python: "When you run this file directly,
-# find the function named 'main()' and run it."
-    print("\n[bold]=== All scans complete. ===[/bold]")
+# --- 4. START THE PROGRAM ---
 if __name__ == "__main__":
     main()
-
