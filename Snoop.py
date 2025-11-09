@@ -143,7 +143,7 @@ def decode_lsb(image_path):
             print("[bold green]:white_check_mark: LSB Scan: No hidden message found.[/bold green]")
             return
 
-        else: print("[bold yellow]:key: LSB Scan: Found unverified data[/bold yellow]")
+        else: print("[bold yellow]:key: LSB Scan: Found Binary data[/bold yellow]")
         
         try:
             secret_bytes = bytes(secret_message_bytes)
