@@ -18,8 +18,8 @@ def print_banner():
     Prints the cool ASCII art banner for the tool.
     """
     # You can change the font to "slant", "block", "starwars", etc.
-    banner = pyfiglet.figlet_format("StegaSnoop", font="speed")
-    print(f"[bold green]{banner}[/bold green]")
+    banner = pyfiglet.figlet_format("StegaSnoop", font="isometric3")
+    print(f"[bold yellow]{banner}[/bold yellow]")
     print("[bold]A TUI-based Steganography Scanner[/bold]\n")
 
 def check_eof(image_path):
