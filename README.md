@@ -40,7 +40,7 @@ Python packages: rich, pillow, pyfiglet
 INSTALLATION & SETUP (for Kali Linux)
 
 Clone the repository:
-git clone [YOUR GITHUB REPO URL HERE]
+git clone https://github.com/bardthebird-hash/STEGASNOOP.git
 cd StegaSnoop-TUI
 
 (Recommended) Create a Python virtual environment:
@@ -61,7 +61,7 @@ pip uninstall pillow
 pip install pillow
 
 Run the tool!
-python snoop.py --help
+python snoop.py
 
 USAGE
 
